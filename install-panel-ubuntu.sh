@@ -8,7 +8,7 @@ greenMessage() {
 
 update(){
 	greenMessage "** Updating & Upgrading.."
-	apt update -y && apt upgrade -y
+	apt update -y
 }
 
 install_dependency(){
@@ -53,9 +53,17 @@ setup_mysql(){
 
 	greenMessage "Please Enter Same MySQL Password if asked 5 times.."
 	mysql -u root -p -e "USE mysql;"
+
+	greenMessage "Create MySQL USER.."
 	mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';"
+
+	greenMessage "Create Database.."
 	mysql -u root -p -e "CREATE DATABASE panel;"
+
+	greenMessage "Grant Access to MySQL User.."
 	mysql -u root -p -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
+
+	greenMessage "Flush PRIVILEGES.."
 	mysql -u root -p -e "FLUSH PRIVILEGES;"
 }
 
