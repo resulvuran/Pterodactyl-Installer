@@ -51,6 +51,7 @@ setup_mysql(){
 
 	mysql_secure_installation
 
+	greenMessage "Please Enter Same MySQL Password if asked 5 times.."
 	mysql -u root -p -e "USE mysql;"
 	mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';"
 	mysql -u root -p -e "CREATE DATABASE panel;"
@@ -114,15 +115,17 @@ web_ngnix(){
 	cd /etc/nginx/sites-available/
 	wget ${CONFIG}/pterodactyl.conf
 
-	echo -n "* Enter Panel IP or Hostname:"
+	echo -n "* Enter Panel IP or Hostname: "
   	read FQDN
   	
 	sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
+
+	sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
 	systemctl restart nginx
 }
 
 install_complete(){
-	echo "** Pterodactyl Panel Installed Successfull!"
+	greenMessage "** Pterodactyl Panel Installed Successfull!"
 }
 
 update
