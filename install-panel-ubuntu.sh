@@ -113,7 +113,11 @@ web_ngnix(){
 
 	cd /etc/nginx/sites-available/
 	wget ${CONFIG}/pterodactyl.conf
-	sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+
+	echo -n "* Enter Panel IP or Hostname:"
+  	read FQDN
+  	
+	sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
 	systemctl restart nginx
 }
 
