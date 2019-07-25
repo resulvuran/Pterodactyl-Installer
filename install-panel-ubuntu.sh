@@ -1,10 +1,19 @@
 #!/bin/bash
 
+CONFIG="https://raw.githubusercontent.com/SanjaySRocks/Pterodactyl-Installer/master/config"
+
+greenMessage() {
+	echo -e "\\033[32;1m${@}\033[0m"
+}
+
 update(){
+	greenMessage "** Updating & Upgrading.."
 	apt update -y && apt upgrade -y
 }
 
 install_dependency(){
+	greenMessage "** Installing Required Dependencies for Panel.."
+
 	# Add "add-apt-repository" command
 	apt -y install software-properties-common curl
 
@@ -24,10 +33,12 @@ install_dependency(){
 }
 
 install_composer(){
+	greenMessage "** Installing Composer.."
 	curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 }
 
 dl_files(){
+	greenMessage "** Downloading Some Files.."
 	mkdir -p /var/www/pterodactyl
 	cd /var/www/pterodactyl
 	curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.14/panel.tar.gz
@@ -36,6 +47,8 @@ dl_files(){
 }
 
 setup_mysql(){
+	greenMessage "** Mysql Setup Starting.."
+
 	mysql_secure_installation
 
 	mysql -u root -p -e "USE mysql;"
@@ -46,6 +59,7 @@ setup_mysql(){
 }
 
 installation(){
+	greenMessage "** Main Installation.."
 	cp .env.example .env
 	composer install --no-dev --optimize-autoloader
 
@@ -55,29 +69,69 @@ installation(){
 }
 
 configure(){
+	greenMessage "** Configurations.."
+
 	php artisan p:environment:setup
+
 	php artisan p:environment:database
+
 	php artisan p:environment:mail
 }
 
 database_setup(){
+	greenMessage "** Setup Database.."
 	php artisan migrate --seed
 }
 
 adduser() {
+	greenMessage "** Adding User.."
 	php artisan p:user:make
 }
 
 setPermission(){
+	greenMessage "** File Permission Setup.."
 	chown -R www-data:www-data * 
 }
 
 crontab_setup(){
+	greenMessage "** Cronjob Setup.."
 	CRON="* * * * * php /var/www/pterodactyl/artisan schedule:run >> /dev/null 2>&1"
 	crontab -l | { cat; echo "${CRON}"; } | crontab -
 }
 
 create_pteroq(){
+	greenMessage "** Pteroq Config File Downloading.."
 	cd /etc/systemd/system;
-	wget 
+	wget ${CONFIG}/pteroq.service
+
+	#sudo systemctl enable --now redis-server
+	sudo systemctl enable --now pteroq.service
 }
+
+web_ngnix(){
+	greenMessage "** Ngnix Config Downloading & Setup"
+
+	cd /etc/nginx/sites-available/
+	wget ${CONFIG}/pterodactyl.conf
+	sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+	systemctl restart nginx
+}
+
+install_complete(){
+	echo "** Pterodactyl Panel Installed Successfull!"
+}
+
+update
+install_dependency
+install_composer
+dl_files
+setup_mysql
+installation
+configure
+database_setup
+adduser
+setPermission
+crontab_setup
+create_pteroq
+web_ngnix
+install_complete
