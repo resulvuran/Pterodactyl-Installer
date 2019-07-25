@@ -55,7 +55,11 @@ setup_mysql(){
 	mysql -u root -p -e "USE mysql;"
 
 	greenMessage "Create MySQL USER.."
-	mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY 'somePassword';"
+	
+	echo -n "* Set MySQL User Password: "
+  	read SPASS
+
+	mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${SPASS}';"
 
 	greenMessage "Create Database.."
 	mysql -u root -p -e "CREATE DATABASE panel;"
