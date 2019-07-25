@@ -3,4 +3,5 @@ Pterodactyl Panel is designed to run on your own web server. You will need to ha
 
 ### Panel for Ubuntu
 
-    wget https://raw.githubusercontent.com/SanjaySRocks/Pterodactyl-Installer/master/install-panel-ubuntu.sh; bash install-panel-ubuntu.sh;
+    wget https://raw.githubusercontent.com/SanjaySRocks/Pterodactyl-Installer/master/install-panel-ubuntu.sh;
+    bash install-panel-ubuntu.sh;
