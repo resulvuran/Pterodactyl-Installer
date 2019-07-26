@@ -54,6 +54,10 @@ setup_mysql(){
 	echo -n "* Enter MySQL Root Password: "
 	read RPASS
 
+	until mysql -u root -p${RPASS}  -e ";" ; do
+       read -s -p "WRONG MySQL ROOT PASSWORD, TRY AGAIN: " mysqlRootPassword
+	done
+
 	mysql -u root -p{RPASS} -e "USE mysql;"
 
 	greenMessage "Create MySQL USER.."
@@ -70,6 +74,12 @@ setup_mysql(){
 
 	greenMessage "Flush PRIVILEGES.."
 	mysql -u root -p{RPASS} -e "FLUSH PRIVILEGES;"
+
+	echo "*****************************************"
+	greenMessage "Database User: pterodactyl"
+	greenMessage "Database Pass: ${SPASS}"
+	greenMessage "Database Name: panel"
+	echo "*****************************************"
 }
 
 installation(){
