@@ -51,24 +51,25 @@ setup_mysql(){
 
 	mysql_secure_installation
 
-	greenMessage "Please Enter Same MySQL Password if asked 5 times.."
-	mysql -u root -p -e "USE mysql;"
+	echo -n "* Enter MySQL Root Password: "
+	read RPASS
+
+	mysql -u root -p{RPASS} -e "USE mysql;"
 
 	greenMessage "Create MySQL USER.."
-	
 	echo -n "* Set MySQL User Password: "
   	read SPASS
 
-	mysql -u root -p -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${SPASS}';"
+	mysql -u root -p{RPASS} -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${SPASS}';"
 
 	greenMessage "Create Database.."
-	mysql -u root -p -e "CREATE DATABASE panel;"
+	mysql -u root -p{RPASS} -e "CREATE DATABASE panel;"
 
 	greenMessage "Grant Access to MySQL User.."
-	mysql -u root -p -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
+	mysql -u root -p{RPASS} -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
 
 	greenMessage "Flush PRIVILEGES.."
-	mysql -u root -p -e "FLUSH PRIVILEGES;"
+	mysql -u root -p{RPASS} -e "FLUSH PRIVILEGES;"
 }
 
 installation(){
