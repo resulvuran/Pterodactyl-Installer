@@ -60,25 +60,26 @@ setup_mysql(){
 
 	mysql -u root -p{RPASS} -e "USE mysql;"
 
-	greenMessage "Create MySQL USER.."
 	echo -n "* Set MySQL User Password: "
   	read SPASS
 
+  	greenMessage "Created MySQL USER.."
 	mysql -u root -p{RPASS} -e "CREATE USER 'pterodactyl'@'127.0.0.1' IDENTIFIED BY '${SPASS}';"
 
-	greenMessage "Create Database.."
+	greenMessage "Created Database.."
 	mysql -u root -p{RPASS} -e "CREATE DATABASE panel;"
 
-	greenMessage "Grant Access to MySQL User.."
+	greenMessage "Granted Access to MySQL User.."
 	mysql -u root -p{RPASS} -e "GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'127.0.0.1' WITH GRANT OPTION;"
 
-	greenMessage "Flush PRIVILEGES.."
+	greenMessage "Flushesd PRIVILEGES.."
 	mysql -u root -p{RPASS} -e "FLUSH PRIVILEGES;"
 
 	echo "*****************************************"
 	greenMessage "Database User: pterodactyl"
 	greenMessage "Database Pass: ${SPASS}"
 	greenMessage "Database Name: panel"
+	echo "pterodactyl:${SPASS}:panel" >> mysql_credentials.txt
 	echo "*****************************************"
 }
 
