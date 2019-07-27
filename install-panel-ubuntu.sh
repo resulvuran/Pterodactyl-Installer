@@ -55,7 +55,7 @@ setup_mysql(){
 	read RPASS
 
 	until mysql -u root -p${RPASS}  -e ";" ; do
-       read -s -p "WRONG MySQL ROOT PASSWORD, TRY AGAIN: " mysqlRootPassword
+       read -s -p "Incorrect MySQL root password, TRY AGAIN: " RPASS
 	done
 
 	mysql -u root -p{RPASS} -e "USE mysql;"
