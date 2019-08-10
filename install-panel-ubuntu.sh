@@ -1,6 +1,8 @@
 #!/bin/bash
 
 CONFIG="https://raw.githubusercontent.com/SanjaySRocks/Pterodactyl-Installer/master/config"
+NGINX_NONSSL="ngnix_nonssl.conf"
+NGINX_SSL="ngnix_ssl.conf"
 
 greenMessage() {
 	echo -e "\\033[32;1m${@}\033[0m"
@@ -39,6 +41,7 @@ install_composer(){
 
 dl_files(){
 	greenMessage "** Downloading Some Files.."
+
 	mkdir -p /var/www/pterodactyl
 	cd /var/www/pterodactyl
 	curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.14/panel.tar.gz
@@ -136,8 +139,10 @@ create_pteroq(){
 web_ngnix(){
 	greenMessage "** Ngnix Config Downloading & Setup"
 
-	cd /etc/nginx/sites-available/
-	wget ${CONFIG}/pterodactyl.conf
+	rm -rf /etc/nginx/sites-enabled/default
+
+	curl -o /etc/nginx/sites-available/pterodactyl.conf $CONFIG/$NGINX_NONSSL
+
 
 	echo -n "* Enter Panel IP or Hostname: "
   	read FQDN
