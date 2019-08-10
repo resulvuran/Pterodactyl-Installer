@@ -129,8 +129,8 @@ crontab_setup(){
 
 create_pteroq(){
 	greenMessage "** Pteroq Config File Downloading.."
-	cd /etc/systemd/system;
-	wget ${CONFIG}/pteroq.service
+
+	curl -o /etc/systemd/system/pteroq.service ${CONFIG}/pteroq.service
 
 	#sudo systemctl enable --now redis-server
 	sudo systemctl enable --now pteroq.service
@@ -140,9 +140,7 @@ web_ngnix(){
 	greenMessage "** Ngnix Config Downloading & Setup"
 
 	rm -rf /etc/nginx/sites-enabled/default
-
-	curl -o /etc/nginx/sites-available/pterodactyl.conf $CONFIG/$NGINX_NONSSL
-
+	curl -o /etc/nginx/sites-available/pterodactyl.conf ${CONFIG}/${NGINX_NONSSL}
 
 	echo -n "* Enter Panel IP or Hostname: "
   	read FQDN
